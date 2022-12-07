@@ -10,8 +10,8 @@ function Copyright() {
   return (
     <Typography variant="body2" color="text.secondary" align="center">
       {'Copyright © '}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
+      <Link color="inherit" href="https://github.com/Doreapp">
+        Antoine Mandin
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}
@@ -24,7 +24,7 @@ export default function App() {
     <Container maxWidth="sm">
       <div className="my-4">
         <Typography variant="h4" component="h1" gutterBottom>
-          Create React App + Tailwind CSS example
+          Take news app: A small web-mobile app to remember to take news from friends
         </Typography>
         <Slider
           className="my-4"

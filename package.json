@@ -1,6 +1,6 @@
 {
-  "name": "tailwind-css",
-  "version": "5.0.0",
+  "name": "take-news",
+  "version": "0.0.1",
   "private": true,
   "dependencies": {
     "@emotion/react": "latest",
