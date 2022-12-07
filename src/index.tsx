@@ -4,6 +4,7 @@ import { createTheme, StyledEngineProvider, ThemeProvider } from '@mui/material/
 import { CssBaseline } from '@mui/material';
 import './index.css';
 import App from './App';
+import { themeOptions } from './Theme';
 
 const rootElement = document.getElementById('root');
 const root = createRoot(rootElement!);
@@ -23,6 +24,7 @@ const theme = createTheme({
       },
     },
   },
+  ...themeOptions
 });
 
 root.render(
