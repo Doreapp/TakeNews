@@ -7,14 +7,32 @@ Uses:
 - [TailwindCSS](https://tailwindcss.com/)
 - [MUI](https://mui.com/)
 
+Commands can be run nativelly (using Node, npm and react scripts) or using docker.
+
 ## Install
 
-```bash
-npm install
-``` 
+- Nativelly
+
+    ```bash
+    npm install
+    ``` 
+
+- Dockerized
+
+    ```bash
+    make build
+    ```
 
 ## Development
 
-```bash
-npm start
-```
+- Nativelly
+
+    ```bash
+    npm start
+    ```
+
+- Dockerized
+
+    ```bash
+    make dev
+    ```
