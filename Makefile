@@ -34,11 +34,11 @@ start:
 dev: 		## Build and start the development server
 dev: build start
 
-# format: 	## Build and reformat the code
-# format: build run_format
+format: 	## Build and reformat the code
+format: build run_format
 
-# lint: 		## Build and check code format
-# lint: build run_lint
+lint: 		## Build and check code format
+lint: build run_lint
 
 _interactive: # Enter the docker image interactivelly
 _interactive: build
