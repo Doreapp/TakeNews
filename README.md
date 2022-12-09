@@ -36,3 +36,12 @@ Commands can be run nativelly (using Node, npm and react scripts) or using docke
     ```bash
     make dev
     ```
+
+### Formatting
+
+- Automatic reformat:
+  - Nativelly: `npm run format`
+  - Dockerized: `make format`
+- Static analysis (lint):
+  - Nativelly: `npm run lint`
+  - Dockerized: `make lint`
