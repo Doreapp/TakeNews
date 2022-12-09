@@ -1,13 +1,17 @@
-import * as React from 'react';
-import { createRoot } from 'react-dom/client';
-import { createTheme, StyledEngineProvider, ThemeProvider } from '@mui/material/styles';
-import { CssBaseline } from '@mui/material';
-import './index.css';
-import App from './App';
-import { themeOptions } from './Theme';
+import * as React from "react";
+import {createRoot} from "react-dom/client";
+import {
+  createTheme,
+  StyledEngineProvider,
+  ThemeProvider,
+} from "@mui/material/styles";
+import {CssBaseline} from "@mui/material";
+import "./index.css";
+import App from "./App";
+import {themeOptions} from "./Theme";
 
-const rootElement = document.getElementById('root');
-const root = createRoot(rootElement!);
+const rootElement = document.getElementById("root");
+const root = createRoot(rootElement!); // eslint-disable-line
 
 // All `Portal`-related components need to have the the main app wrapper element as a container
 // so that the are in the subtree under the element used in the `important` option of the Tailwind's config.
@@ -24,7 +28,7 @@ const theme = createTheme({
       },
     },
   },
-  ...themeOptions
+  ...themeOptions,
 });
 
 root.render(
@@ -35,5 +39,5 @@ root.render(
         <App />
       </ThemeProvider>
     </StyledEngineProvider>
-  </React.StrictMode>,
+  </React.StrictMode>
 );
