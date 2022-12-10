@@ -44,6 +44,7 @@ build: 		## Build docker image and generate production-ready code in build direc
 build: docker_build
 	mkdir -p $(shell pwd)/build/
 	$(DOCKER_RUN) \
+		-e PUBLIC_URL \
 		-v $(shell pwd)/build:/app/build \
 		-t $(DOCKER_IMAGE) run build
 	
