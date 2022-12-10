@@ -20,7 +20,7 @@ Commands can be run nativelly (using Node, npm and react scripts) or using docke
 - Dockerized
 
     ```bash
-    make build
+    make docker_build
     ```
 
 ## Development
