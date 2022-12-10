@@ -19,8 +19,8 @@ help:
 	@echo
 	@fgrep -h "##" $(MAKEFILE_LIST) | fgrep -v fgrep | sed -e 's/\\$$//' | sed -e 's/##//'
 
-build: 		## Build docker image
-build:
+docker_build: 		## Build docker image
+docker_build:
 	docker build -t $(DOCKER_IMAGE) $(OPTIONS) .
 
 run_%: 		## Run 'npm run %'
@@ -32,16 +32,25 @@ start:
 	$(DOCKER_RUN) -i -t $(DOCKER_IMAGE) start
 
 dev: 		## Build and start the development server
-dev: build start
+dev: docker_build start
 
 format: 	## Build and reformat the code
-format: build run_format
+format: docker_build run_format
 
 lint: 		## Build and check code format
-lint: build run_lint
+lint: docker_build run_lint
+
+build: 		## Build docker image and generate production-ready code in build directory
+build: docker_build
+	mkdir -p $(shell pwd)/build/
+	$(DOCKER_RUN) \
+		-e PUBLIC_URL \
+		-v $(shell pwd)/build:/app/build \
+		-t $(DOCKER_IMAGE) run build
+	
 
 _interactive: # Enter the docker image interactivelly
-_interactive: build
+_interactive: docker_build
 	$(DOCKER_RUN) -i --entrypoint /bin/bash -t $(DOCKER_IMAGE)
 
 _node_modules: # Force node_nodules update
@@ -51,4 +60,4 @@ _node_modules: # Force node_nodules update
 		-t $(DOCKER_IMAGE) install
 
 node_modules: 	## Build and return node_modules directory using docker
-node_modules: build _node_modules
+node_modules: docker_build _node_modules
