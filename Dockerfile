@@ -2,7 +2,7 @@
 FROM node:18.11.0-bullseye-slim
 
 # Generic configuration
-RUN mkdir /app/ /app/src/ /.npm/
+RUN mkdir /app/ /app/src/ /.npm/ /app/node_modules/ /app/node_modules/.cache
 WORKDIR /app
 
 # Project configuration
