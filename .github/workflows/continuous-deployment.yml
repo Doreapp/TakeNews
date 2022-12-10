@@ -1,6 +1,8 @@
 name: Documentation
-on: [push]
-# TODO: run only on main branch
+on: 
+  push:
+    branches:
+      - main
 
 jobs:
   Deploy:
