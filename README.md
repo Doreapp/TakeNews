@@ -23,6 +23,20 @@ Commands can be run nativelly (using Node, npm and react scripts) or using docke
     make docker_build
     ```
 
+## Generation of a production-ready source code
+
+- Nativelly
+
+    ```bash
+    npm run build
+    ``` 
+
+- Dockerized
+
+    ```bash
+    make build
+    ```
+
 ## Development
 
 - Nativelly

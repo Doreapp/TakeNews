@@ -40,6 +40,14 @@ format: docker_build run_format
 lint: 		## Build and check code format
 lint: docker_build run_lint
 
+build: 		## Build docker image and generate production-ready code in build directory
+build: docker_build
+	mkdir -p $(shell pwd)/build/
+	$(DOCKER_RUN) \
+		-v $(shell pwd)/build:/app/build \
+		-t $(DOCKER_IMAGE) run build
+	
+
 _interactive: # Enter the docker image interactivelly
 _interactive: docker_build
 	$(DOCKER_RUN) -i --entrypoint /bin/bash -t $(DOCKER_IMAGE)
