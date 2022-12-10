@@ -11,51 +11,32 @@ Commands can be run nativelly (using Node, npm and react scripts) or using docke
 
 ## Install
 
-- Nativelly
-
-    ```bash
-    npm install
-    ``` 
-
-- Dockerized
-
-    ```bash
-    make docker_build
-    ```
+| Nativelly | Dockerized |
+| --------- | ---------- |
+| `npm install` | `make docker_build` |
 
 ## Generation of a production-ready source code
 
-- Nativelly
-
-    ```bash
-    npm run build
-    ``` 
-
-- Dockerized
-
-    ```bash
-    make build
-    ```
+| Nativelly | Dockerized |
+| --------- | ---------- |
+| `npm run build` | `make build` |
 
 ## Development
 
-- Nativelly
-
-    ```bash
-    npm start
-    ```
-
-- Dockerized
-
-    ```bash
-    make dev
-    ```
+| Nativelly | Dockerized |
+| --------- | ---------- |
+| `npm start` | `make dev` |
 
 ### Formatting
 
 - Automatic reformat:
-  - Nativelly: `npm run format`
-  - Dockerized: `make format`
+
+    | Nativelly | Dockerized |
+    | --------- | ---------- |
+    | `npm run format` | `make format` |
+
 - Static analysis (lint):
-  - Nativelly: `npm run lint`
-  - Dockerized: `make lint`
+
+    | Nativelly | Dockerized |
+    | --------- | ---------- |
+    | `npm run lint` | `make lint` |
