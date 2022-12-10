@@ -1,0 +1,20 @@
+name: Documentation
+on: [push]
+# TODO: run only on main branch
+
+jobs:
+  Deploy:
+    runs-on: ubuntu-latest
+    name: Deploy
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+      - name: Generate production ready code
+        run: make build
+      # https://github.com/peaceiris/actions-gh-pages
+      - name: Deploy on GH pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          publish_branch: gh-pages
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: build/
