@@ -7,6 +7,8 @@ import * as React from "react";
 import Container from "@mui/material/Container";
 import {IPerson} from "../models";
 import {PersonsList} from "../components/Persons";
+import {Fab} from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
 
 export default function HomePage(): JSX.Element {
   const persons: IPerson[] = [
@@ -38,6 +40,12 @@ export default function HomePage(): JSX.Element {
   return (
     <Container maxWidth="md">
       <PersonsList persons={persons} />
+      <Fab
+        color="primary"
+        aria-label="Create a new person"
+        className="fixed bottom-6 right-4">
+        <AddIcon />
+      </Fab>
     </Container>
   );
 }
