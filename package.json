@@ -14,6 +14,7 @@
     "@types/react": "latest",
     "@types/react-dom": "latest",
     "autoprefixer": "latest",
+    "moment": "^2.29.4",
     "postcss": "latest",
     "react": "latest",
     "react-dom": "latest",
