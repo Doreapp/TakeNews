@@ -2,9 +2,7 @@ import * as React from "react";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import Link from "@mui/material/Link";
-import Slider from "@mui/material/Slider";
-import PopoverMenu from "./PopoverMenu";
-import ProTip from "./ProTip";
+import HomePage from "./pages/Home";
 
 function Copyright(): JSX.Element {
   return (
@@ -21,22 +19,9 @@ function Copyright(): JSX.Element {
 
 export default function App(): JSX.Element {
   return (
-    <Container maxWidth="sm">
-      <div className="my-4">
-        <Typography variant="h4" component="h1" gutterBottom>
-          Take news app: A small web-mobile app to remember to take news from
-          friends
-        </Typography>
-        <Slider
-          className="my-4"
-          defaultValue={30}
-          classes={{active: "shadow-none"}}
-          slotProps={{thumb: {className: "hover:shadow-none"}}}
-        />
-        <PopoverMenu />
-        <ProTip />
-        <Copyright />
-      </div>
+    <Container className="min-h-screen flex flex-col place-content-between">
+      <HomePage />
+      <Copyright />
     </Container>
   );
 }
