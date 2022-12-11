@@ -2,10 +2,20 @@
  * Person views
  */
 
-import {List, ListItem, ListItemText, Typography} from "@mui/material";
-import React from "react";
+import {
+  Button,
+  Collapse,
+  List,
+  ListItemButton,
+  ListItemText,
+  Typography,
+} from "@mui/material";
+import React, {useState} from "react";
 import {IPerson} from "../models";
 import moment from "moment";
+import CallIcon from "@mui/icons-material/Call";
+import UpdateIcon from "@mui/icons-material/Update";
+import EditIcon from "@mui/icons-material/Edit";
 
 function dateString(date?: number): string {
   switch (moment.locale()) {
@@ -26,7 +36,15 @@ function dateString(date?: number): string {
 /**
  * View for a single person
  */
-export function PersonView({person}: {person: IPerson}): JSX.Element {
+export function PersonView({
+  person,
+  selected = false,
+  onClick,
+}: {
+  person: IPerson;
+  selected: boolean;
+  onClick: () => void;
+}): JSX.Element {
   let officialName = person.firstname;
   if (person.lastname !== undefined) {
     if (officialName !== undefined) {
@@ -45,24 +63,50 @@ export function PersonView({person}: {person: IPerson}): JSX.Element {
   if (secondaryName !== undefined) {
     secondaryName = " — " + secondaryName;
   }
+
+  const onCallClicked = (): void => {
+    console.log("TODO call the person", person.phonenumber);
+  };
+  const onUpdateContactClicked = (): void => {
+    console.log("TODO update last contact", person.lastcontact);
+  };
+  const onEditClicked = (): void => {
+    console.log("TODO edit person", person);
+  };
+
   return (
-    <ListItem>
-      <ListItemText
-        primary={
-          <React.Fragment>
-            {mainName}
-            <Typography
-              sx={{display: "inline"}}
-              component="span"
-              variant="body2"
-              color="text.secondary">
-              {secondaryName}
-            </Typography>
-          </React.Fragment>
-        }
-        secondary={dateString(person.lastcontact)}
-      />
-    </ListItem>
+    <div>
+      <ListItemButton onClick={onClick}>
+        <ListItemText
+          primary={
+            <React.Fragment>
+              {mainName}
+              <Typography
+                sx={{display: "inline"}}
+                component="span"
+                variant="body2"
+                color="text.secondary">
+                {secondaryName}
+              </Typography>
+            </React.Fragment>
+          }
+          secondary={dateString(person.lastcontact)}
+        />
+      </ListItemButton>
+      <Collapse in={selected} timeout="auto" unmountOnExit>
+        <div className="flex flex-row place-content-around pl-2">
+          <Button onClick={onCallClicked}>
+            <CallIcon />
+          </Button>
+          <Button onClick={onUpdateContactClicked}>
+            <UpdateIcon />
+          </Button>
+          <Button onClick={onEditClicked}>
+            <EditIcon />
+          </Button>
+        </div>
+      </Collapse>
+    </div>
   );
 }
 
@@ -70,10 +114,25 @@ export function PersonView({person}: {person: IPerson}): JSX.Element {
  * View of the persons' list
  */
 export function PersonsList({persons}: {persons: IPerson[]}): JSX.Element {
+  const [selection, select] = useState<number>(-1);
   const items: JSX.Element[] = [];
   let index = 0;
   for (const person of persons) {
-    items.push(<PersonView key={index++} person={person} />);
+    const key = index++;
+    items.push(
+      <PersonView
+        key={key}
+        person={person}
+        onClick={() => {
+          if (key === selection) {
+            select(-1);
+          } else {
+            select(key);
+          }
+        }}
+        selected={key === selection}
+      />
+    );
   }
   return <List>{items}</List>;
 }
