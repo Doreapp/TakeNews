@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "https://doreapp.github.io/TakeNews/static/css/main.fc6ec763.css",
-    "main.js": "https://doreapp.github.io/TakeNews/static/js/main.550a2a5a.js",
+    "main.css": "https://doreapp.github.io/TakeNews/static/css/main.4bb47591.css",
+    "main.js": "https://doreapp.github.io/TakeNews/static/js/main.25376cff.js",
     "index.html": "https://doreapp.github.io/TakeNews/index.html",
-    "main.fc6ec763.css.map": "https://doreapp.github.io/TakeNews/static/css/main.fc6ec763.css.map",
-    "main.550a2a5a.js.map": "https://doreapp.github.io/TakeNews/static/js/main.550a2a5a.js.map"
+    "main.4bb47591.css.map": "https://doreapp.github.io/TakeNews/static/css/main.4bb47591.css.map",
+    "main.25376cff.js.map": "https://doreapp.github.io/TakeNews/static/js/main.25376cff.js.map"
   },
   "entrypoints": [
-    "static/css/main.fc6ec763.css",
-    "static/js/main.550a2a5a.js"
+    "static/css/main.4bb47591.css",
+    "static/js/main.25376cff.js"
   ]
 }
