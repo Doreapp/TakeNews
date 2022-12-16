@@ -15,6 +15,7 @@ import {
   TextField,
   DialogActions,
   FormControl,
+  Alert,
 } from "@mui/material";
 import React, {FormEvent, useState} from "react";
 import {IPerson} from "../models";
@@ -191,6 +192,7 @@ export function EditPersonDialog({
   /** Callback onedition/creation validation (with new person as param) */
   onValidate: (person: IPerson) => void;
 }): JSX.Element {
+  const [error, setError] = React.useState<string | undefined>(undefined);
   const handleValidate = (event: FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -203,17 +205,30 @@ export function EditPersonDialog({
       return undefined;
     };
 
-    onValidate({
+    const person = {
       nickname: get("nickname"),
       firstname: get("firstname"),
       lastname: get("lastname"),
-    });
+    };
+
+    if (
+      person.nickname === undefined &&
+      person.firstname === undefined &&
+      person.lastname === undefined
+    ) {
+      setError("At least one of the names must be defined");
+      return;
+    }
+
+    setError(undefined);
+    onValidate(person);
   };
 
   const editing = person !== undefined;
   return (
     <Dialog open={open} onClose={onCancel}>
       <DialogTitle>{editing ? "Person edition" : "New person"}</DialogTitle>
+      {error !== undefined && <Alert severity="error">{error}</Alert>}
       <DialogContent>
         <FormControl
           component="form"
