@@ -163,11 +163,41 @@ function Field({
       fullWidth
       variant="standard"
       label={name}
-      name={name.toLowerCase()}
-      id={name.toLowerCase()}
+      name={name.toLowerCase().replaceAll(" ", "-")}
+      id={name.toLowerCase().replaceAll(" ", "-")}
       {...other}
     />
   );
+}
+
+/**
+ * Field for a phone number.
+ * Only accept number digits and an optional prefixing `+`.
+ */
+function PhoneNumberField({
+  name,
+  ...other
+}: {
+  /** Defines the `label` of the textfield, as well as its `id` and `name` */
+  name: string;
+  [key: string]: any;
+}): JSX.Element {
+  const [value, setValue] = useState<string>("");
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+    const inputVal = event.target.value;
+    let result = "";
+    for (const char of inputVal) {
+      if (char === "+" && result === "") {
+        result = "+";
+      } else if (char.match(/[0-9]/) !== null) {
+        result += char;
+      }
+    }
+    setValue(result);
+  };
+
+  return <Field name={name} value={value} onChange={handleChange} {...other} />;
 }
 
 /**
@@ -209,6 +239,7 @@ export function EditPersonDialog({
       nickname: get("nickname"),
       firstname: get("firstname"),
       lastname: get("lastname"),
+      phoneNumber: get("phone-number"),
     };
 
     if (
@@ -237,6 +268,7 @@ export function EditPersonDialog({
           <Field name="Nickname" autoFocus={true} />
           <Field name="Firstname" />
           <Field name="Lastname" />
+          <PhoneNumberField name="Phone number" />
         </FormControl>
       </DialogContent>
       <DialogActions>
