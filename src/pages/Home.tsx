@@ -11,19 +11,20 @@ import {Fab} from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 
 export default function HomePage(): JSX.Element {
-  const [creating, setCreating] = React.useState<boolean>(false);
-  const [persons, setPersons] = React.useState<IPerson[]>([]);
+  const [state, setState] = React.useState<{
+    creating: boolean;
+    persons: IPerson[];
+  }>({creating: false, persons: []});
   const onCreatePerson = (person: IPerson): void => {
-    setCreating(false);
-    setPersons([...persons, person]);
+    setState({...state, creating: false, persons: [...state.persons, person]});
   };
   return (
     <Container maxWidth="md">
-      <PersonsList persons={persons} />
+      <PersonsList persons={state.persons} />
       <EditPersonDialog
-        open={creating}
+        open={state.creating}
         onCancel={() => {
-          setCreating(false);
+          setState({...state, creating: false});
         }}
         onValidate={onCreatePerson}
       />
@@ -31,7 +32,7 @@ export default function HomePage(): JSX.Element {
         color="primary"
         aria-label="Create a new person"
         className="fixed bottom-6 right-4"
-        onClick={() => setCreating(true)}>
+        onClick={() => setState({...state, creating: true})}>
         <AddIcon />
       </Fab>
     </Container>
