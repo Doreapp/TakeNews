@@ -18,11 +18,16 @@ import {
   Alert,
 } from "@mui/material";
 import React, {FormEvent, useState} from "react";
+import "dayjs/locale/fr";
 import {IPerson} from "../models";
 import moment from "moment";
 import CallIcon from "@mui/icons-material/Call";
 import UpdateIcon from "@mui/icons-material/Update";
 import EditIcon from "@mui/icons-material/Edit";
+import {Dayjs} from "dayjs";
+import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
+import {LocalizationProvider} from "@mui/x-date-pickers/LocalizationProvider";
+import {DatePicker} from "@mui/x-date-pickers/DatePicker";
 
 function dateString(date?: number): string {
   switch (moment.locale()) {
@@ -201,6 +206,31 @@ function PhoneNumberField({
 }
 
 /**
+ * Input field for a date
+ */
+function DateField({
+  name,
+  ...other
+}: {
+  /** Defines the `label` of the textfield, as well as its `id` and `name` */
+  name: string;
+  [key: string]: any;
+}): JSX.Element {
+  const [value, setValue] = React.useState<Dayjs | null>(null);
+  return (
+    <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="fr">
+      <DatePicker
+        label={name}
+        value={value}
+        onChange={setValue}
+        renderInput={(params) => <Field name={name} {...params} />}
+        {...other}
+      />
+    </LocalizationProvider>
+  );
+}
+
+/**
  * Dialog to create/edit a person.
  * For now, only used for creation.
  */
@@ -240,6 +270,7 @@ export function EditPersonDialog({
       firstname: get("firstname"),
       lastname: get("lastname"),
       phoneNumber: get("phone-number"),
+      lastContact: get("last-contact"),
     };
 
     if (
@@ -269,6 +300,13 @@ export function EditPersonDialog({
           <Field name="Firstname" />
           <Field name="Lastname" />
           <PhoneNumberField name="Phone number" />
+          <DateField
+            name="Last contact"
+            PopperProps={{
+              // Setting an higher z-index for the popper to be above the dialog
+              className: "z-[1400]",
+            }}
+          />
         </FormControl>
       </DialogContent>
       <DialogActions>
