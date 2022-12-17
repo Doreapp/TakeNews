@@ -18,12 +18,12 @@ import {
   Alert,
 } from "@mui/material";
 import React, {FormEvent, useState} from "react";
-import "dayjs/locale/fr";
 import {IPerson} from "../models";
 import moment from "moment";
 import CallIcon from "@mui/icons-material/Call";
 import UpdateIcon from "@mui/icons-material/Update";
 import EditIcon from "@mui/icons-material/Edit";
+import "dayjs/locale/fr";
 import {Dayjs} from "dayjs";
 import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
 import {LocalizationProvider} from "@mui/x-date-pickers/LocalizationProvider";
@@ -216,7 +216,7 @@ function DateField({
   name: string;
   [key: string]: any;
 }): JSX.Element {
-  const [value, setValue] = React.useState<Dayjs | null>(null);
+  const [value, setValue] = useState<Dayjs | null>(null);
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="fr">
       <DatePicker
@@ -252,7 +252,7 @@ export function EditPersonDialog({
   /** Callback onedition/creation validation (with new person as param) */
   onValidate: (person: IPerson) => void;
 }): JSX.Element {
-  const [error, setError] = React.useState<string | undefined>(undefined);
+  const [error, setError] = useState<string | undefined>(undefined);
   const handleValidate = (event: FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
