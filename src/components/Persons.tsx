@@ -24,7 +24,7 @@ import CallIcon from "@mui/icons-material/Call";
 import UpdateIcon from "@mui/icons-material/Update";
 import EditIcon from "@mui/icons-material/Edit";
 import "dayjs/locale/fr";
-import {Dayjs} from "dayjs";
+import daysjs, {Dayjs} from "dayjs";
 import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
 import {LocalizationProvider} from "@mui/x-date-pickers/LocalizationProvider";
 import {DatePicker} from "@mui/x-date-pickers/DatePicker";
@@ -222,20 +222,33 @@ function PhoneNumberField({
  */
 function DateField({
   name,
+  date = undefined,
   ...other
 }: {
   /** Defines the `label` of the textfield, as well as its `id` and `name` */
   name: string;
+  /** Initial date value as a number */
+  date?: number;
+  /** Optional value of the datefield (as a number) */
   [key: string]: any;
 }): JSX.Element {
-  const [value, setValue] = useState<Dayjs | null>(null);
+  const [value, setValue] = useState<Dayjs | null>(
+    date !== undefined ? daysjs(date) : null
+  );
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="fr">
       <DatePicker
         label={name}
         value={value}
         onChange={setValue}
-        renderInput={(params) => <Field name={name} {...params} />}
+        renderInput={(params) => (
+          <div>
+            <div style={{display: "none"}}>
+              <Field name={name} value={value ?? ""} />
+            </div>
+            <Field name={`mirror-${name}`} label={name} {...params} />
+          </div>
+        )}
         {...other}
       />
     </LocalizationProvider>
@@ -307,16 +320,17 @@ export function EditPersonDialog({
           component="form"
           id="dialog-form"
           onSubmit={handleValidate}>
-          <Field name="Nickname" autoFocus={true} />
-          <Field name="Firstname" />
-          <Field name="Lastname" />
-          <PhoneNumberField name="Phone number" />
+          <Field name="Nickname" autoFocus={true} value={person?.nickname} />
+          <Field name="Firstname" value={person?.firstname} />
+          <Field name="Lastname" value={person?.lastname} />
+          <PhoneNumberField name="Phone number" value={person?.phonenumber} />
           <DateField
             name="Last contact"
             PopperProps={{
               // Setting an higher z-index for the popper to be above the dialog
               className: "z-[1400]",
             }}
+            date={person?.lastcontact}
           />
         </FormControl>
       </DialogContent>
