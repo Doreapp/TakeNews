@@ -289,12 +289,19 @@ export function EditPersonDialog({
       return undefined;
     };
 
+    let lastContactDate: number | undefined = parseInt(
+      get("last-contact") ?? ""
+    );
+    if (isNaN(lastContactDate)) {
+      lastContactDate = undefined;
+    }
+
     const person = {
       nickname: get("nickname"),
       firstname: get("firstname"),
       lastname: get("lastname"),
-      phoneNumber: get("phone-number"),
-      lastContact: get("last-contact"),
+      phonenumber: get("phone-number"),
+      lastcontact: lastContactDate,
     };
 
     if (
