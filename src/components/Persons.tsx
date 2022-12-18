@@ -63,6 +63,9 @@ interface PersonViewProps {
 
   /** Callback on click on edit button */
   onEditClicked?: (person: IPerson) => void;
+
+  /** Callback on click on delete button */
+  onDeleteClicked?: (person: IPerson) => void;
 }
 
 /**
@@ -73,6 +76,7 @@ export function PersonView({
   selected = false,
   onClick,
   onEditClicked,
+  onDeleteClicked,
 }: PersonViewProps): JSX.Element {
   let officialName = person.firstname;
   if (person.lastname !== undefined) {
@@ -99,9 +103,6 @@ export function PersonView({
   };
   const onUpdateContactClicked = (): void => {
     console.log("TODO update last contact", person.lastcontact);
-  };
-  const onDeleteClicked = (): void => {
-    console.log("TODO delete person", person);
   };
 
   return (
@@ -134,7 +135,7 @@ export function PersonView({
           <Button onClick={() => onEditClicked?.(person)}>
             <EditIcon />
           </Button>
-          <Button onClick={onDeleteClicked}>
+          <Button onClick={() => onDeleteClicked?.(person)}>
             <DeleteIcon />
           </Button>
         </div>
@@ -149,6 +150,9 @@ interface PersonsListProps {
 
   /** Function to edit a person */
   onEditClicked?: (person: IPerson) => void;
+
+  /** Function to delete a person */
+  onDeleteClicked?: (person: IPerson) => void;
 }
 
 /**
@@ -157,6 +161,7 @@ interface PersonsListProps {
 export function PersonsList({
   persons,
   onEditClicked,
+  onDeleteClicked,
 }: PersonsListProps): JSX.Element {
   const [selection, select] = useState<number>(-1);
 
@@ -170,6 +175,7 @@ export function PersonsList({
         person={person}
         onClick={() => select(key === selection ? -1 : key)}
         onEditClicked={onEditClicked}
+        onDeleteClicked={onDeleteClicked}
         selected={key === selection}
       />
     );
