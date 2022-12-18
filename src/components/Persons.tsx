@@ -23,6 +23,7 @@ import moment from "moment";
 import CallIcon from "@mui/icons-material/Call";
 import UpdateIcon from "@mui/icons-material/Update";
 import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
 import "dayjs/locale/fr";
 import daysjs, {Dayjs} from "dayjs";
 import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
@@ -99,6 +100,9 @@ export function PersonView({
   const onUpdateContactClicked = (): void => {
     console.log("TODO update last contact", person.lastcontact);
   };
+  const onDeleteClicked = (): void => {
+    console.log("TODO delete person", person);
+  };
 
   return (
     <div>
@@ -129,6 +133,9 @@ export function PersonView({
           </Button>
           <Button onClick={() => onEditClicked?.(person)}>
             <EditIcon />
+          </Button>
+          <Button onClick={onDeleteClicked}>
+            <DeleteIcon />
           </Button>
         </div>
       </Collapse>
