@@ -38,6 +38,13 @@ export default function HomePage(): JSX.Element {
     }
   };
 
+  const deletePerson = (toDelete: IPerson): void => {
+    const newPersons = state.persons.filter(
+      (person: IPerson) => person !== toDelete
+    );
+    setState({...state, persons: newPersons});
+  };
+
   return (
     <Container maxWidth="md">
       <PersonsList
@@ -45,6 +52,7 @@ export default function HomePage(): JSX.Element {
         onEditClicked={(person: IPerson) =>
           setState({...state, editing: person})
         }
+        onDeleteClicked={deletePerson}
       />
       <EditPersonDialog
         person={state.editing}

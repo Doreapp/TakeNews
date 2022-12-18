@@ -23,6 +23,7 @@ import moment from "moment";
 import CallIcon from "@mui/icons-material/Call";
 import UpdateIcon from "@mui/icons-material/Update";
 import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
 import "dayjs/locale/fr";
 import daysjs, {Dayjs} from "dayjs";
 import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
@@ -62,6 +63,9 @@ interface PersonViewProps {
 
   /** Callback on click on edit button */
   onEditClicked?: (person: IPerson) => void;
+
+  /** Callback on click on delete button */
+  onDeleteClicked?: (person: IPerson) => void;
 }
 
 /**
@@ -72,6 +76,7 @@ export function PersonView({
   selected = false,
   onClick,
   onEditClicked,
+  onDeleteClicked,
 }: PersonViewProps): JSX.Element {
   let officialName = person.firstname;
   if (person.lastname !== undefined) {
@@ -130,6 +135,9 @@ export function PersonView({
           <Button onClick={() => onEditClicked?.(person)}>
             <EditIcon />
           </Button>
+          <Button onClick={() => onDeleteClicked?.(person)}>
+            <DeleteIcon />
+          </Button>
         </div>
       </Collapse>
     </div>
@@ -142,6 +150,9 @@ interface PersonsListProps {
 
   /** Function to edit a person */
   onEditClicked?: (person: IPerson) => void;
+
+  /** Function to delete a person */
+  onDeleteClicked?: (person: IPerson) => void;
 }
 
 /**
@@ -150,6 +161,7 @@ interface PersonsListProps {
 export function PersonsList({
   persons,
   onEditClicked,
+  onDeleteClicked,
 }: PersonsListProps): JSX.Element {
   const [selection, select] = useState<number>(-1);
 
@@ -163,6 +175,7 @@ export function PersonsList({
         person={person}
         onClick={() => select(key === selection ? -1 : key)}
         onEditClicked={onEditClicked}
+        onDeleteClicked={onDeleteClicked}
         selected={key === selection}
       />
     );
