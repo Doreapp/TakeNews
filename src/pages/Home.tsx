@@ -10,16 +10,19 @@ import {PersonsList, EditPersonDialog} from "../components/Persons";
 import {Fab} from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 
+interface HomeState {
+  creating: boolean;
+  editing?: IPerson;
+  persons: IPerson[];
+}
+
 export default function HomePage(): JSX.Element {
-  const [state, setState] = React.useState<{
-    creating: boolean;
-    editing?: IPerson;
-    persons: IPerson[];
-  }>({
+  const [state, setState] = React.useState<HomeState>({
     creating: false,
     editing: undefined,
     persons: [],
   });
+
   const onCreateOrEditPerson = (newPerson: IPerson): void => {
     if (state.creating) {
       setState({
@@ -34,6 +37,7 @@ export default function HomePage(): JSX.Element {
       setState({...state, editing: undefined, persons: newPersons});
     }
   };
+
   return (
     <Container maxWidth="md">
       <PersonsList

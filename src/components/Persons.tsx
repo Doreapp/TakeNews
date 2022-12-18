@@ -29,6 +29,11 @@ import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
 import {LocalizationProvider} from "@mui/x-date-pickers/LocalizationProvider";
 import {DatePicker} from "@mui/x-date-pickers/DatePicker";
 
+/**
+ * Return the description of the date relativelly to now
+ * @param date Date to consider
+ * @returns A string such as '13 days ago'
+ */
 function dateString(date?: number): string {
   switch (moment.locale()) {
     case "fr":
@@ -45,6 +50,20 @@ function dateString(date?: number): string {
   }
 }
 
+interface PersonViewProps {
+  /** Person to display */
+  person: IPerson;
+
+  /** Is the person selected */
+  selected: boolean;
+
+  /** Callback on click on the person view */
+  onClick: () => void;
+
+  /** Callback on click on edit button */
+  onEditClicked?: (person: IPerson) => void;
+}
+
 /**
  * View for a single person
  */
@@ -53,16 +72,7 @@ export function PersonView({
   selected = false,
   onClick,
   onEditClicked,
-}: {
-  /** Person to display */
-  person: IPerson;
-  /** Is the person selected */
-  selected: boolean;
-  /** Callback on click on the person view */
-  onClick: () => void;
-  /** Callback on click on edit button */
-  onEditClicked?: (person: IPerson) => void;
-}): JSX.Element {
+}: PersonViewProps): JSX.Element {
   let officialName = person.firstname;
   if (person.lastname !== undefined) {
     if (officialName !== undefined) {
@@ -71,6 +81,7 @@ export function PersonView({
       officialName = person.lastname;
     }
   }
+
   let mainName, secondaryName;
   if (person.nickname !== undefined) {
     mainName = person.nickname;
@@ -125,19 +136,23 @@ export function PersonView({
   );
 }
 
+interface PersonsListProps {
+  /** List of persons */
+  persons: IPerson[];
+
+  /** Function to edit a person */
+  onEditClicked?: (person: IPerson) => void;
+}
+
 /**
  * View of the persons' list
  */
 export function PersonsList({
   persons,
   onEditClicked,
-}: {
-  /** List of persons */
-  persons: IPerson[];
-  /** Function to edit a person */
-  onEditClicked?: (person: IPerson) => void;
-}): JSX.Element {
+}: PersonsListProps): JSX.Element {
   const [selection, select] = useState<number>(-1);
+
   const items: JSX.Element[] = [];
   let index = 0;
   for (const person of persons) {
@@ -146,13 +161,7 @@ export function PersonsList({
       <PersonView
         key={key}
         person={person}
-        onClick={() => {
-          if (key === selection) {
-            select(-1);
-          } else {
-            select(key);
-          }
-        }}
+        onClick={() => select(key === selection ? -1 : key)}
         onEditClicked={onEditClicked}
         selected={key === selection}
       />
@@ -161,19 +170,17 @@ export function PersonsList({
   return <List>{items}</List>;
 }
 
-/**
- * Text field for the edit/create dialog
- * @param props Includes:
- * @returns TextField instance
- */
-function Field({
-  name,
-  ...other
-}: {
+interface FieldProps {
   /** Defines the `label` of the textfield, as well as its `id` and `name` */
   name: string;
+
   [key: string]: any;
-}): JSX.Element {
+}
+
+/**
+ * Text field for the edit/create dialog
+ */
+function Field({name, ...other}: FieldProps): JSX.Element {
   return (
     <TextField
       margin="dense"
@@ -191,14 +198,7 @@ function Field({
  * Field for a phone number.
  * Only accept number digits and an optional prefixing `+`.
  */
-function PhoneNumberField({
-  name,
-  ...other
-}: {
-  /** Defines the `label` of the textfield, as well as its `id` and `name` */
-  name: string;
-  [key: string]: any;
-}): JSX.Element {
+function PhoneNumberField(props: FieldProps): JSX.Element {
   const [value, setValue] = useState<string>("");
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
@@ -214,7 +214,12 @@ function PhoneNumberField({
     setValue(result);
   };
 
-  return <Field name={name} value={value} onChange={handleChange} {...other} />;
+  return <Field {...props} value={value} onChange={handleChange} />;
+}
+
+interface DateFieldProps extends FieldProps {
+  /** Initial date value as a number */
+  date?: number;
 }
 
 /**
@@ -224,14 +229,7 @@ function DateField({
   name,
   date = undefined,
   ...other
-}: {
-  /** Defines the `label` of the textfield, as well as its `id` and `name` */
-  name: string;
-  /** Initial date value as a number */
-  date?: number;
-  /** Optional value of the datefield (as a number) */
-  [key: string]: any;
-}): JSX.Element {
+}: DateFieldProps): JSX.Element {
   const [value, setValue] = useState<Dayjs | null>(
     date !== undefined ? daysjs(date) : null
   );
@@ -255,15 +253,7 @@ function DateField({
   );
 }
 
-/**
- * Dialog to create/edit a person.
- */
-export function EditPersonDialog({
-  person,
-  open,
-  onCancel,
-  onValidate,
-}: {
+interface EditPersonDialogProps {
   /** The person to edit */
   person?: IPerson;
 
@@ -275,12 +265,23 @@ export function EditPersonDialog({
 
   /** Callback onedition/creation validation (with new person as param) */
   onValidate: (person: IPerson) => void;
-}): JSX.Element {
+}
+
+/**
+ * Dialog to create/edit a person.
+ */
+export function EditPersonDialog({
+  person,
+  open,
+  onCancel,
+  onValidate,
+}: EditPersonDialogProps): JSX.Element {
   const [error, setError] = useState<string | undefined>(undefined);
   const handleValidate = (event: FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
 
+    /** Get the value of the field named `name` or undefined if empty */
     const get = (name: string): string | undefined => {
       const value = data.get(name);
       if (typeof value === "string" && value.trim() !== "") {
@@ -289,11 +290,9 @@ export function EditPersonDialog({
       return undefined;
     };
 
-    let lastContactDate: number | undefined = parseInt(
-      get("last-contact") ?? ""
-    );
-    if (isNaN(lastContactDate)) {
-      lastContactDate = undefined;
+    let lastContact: number | undefined = parseInt(get("last-contact") ?? "");
+    if (isNaN(lastContact)) {
+      lastContact = undefined;
     }
 
     const person = {
@@ -301,7 +300,7 @@ export function EditPersonDialog({
       firstname: get("firstname"),
       lastname: get("lastname"),
       phonenumber: get("phone-number"),
-      lastcontact: lastContactDate,
+      lastcontact: lastContact,
     };
 
     if (
