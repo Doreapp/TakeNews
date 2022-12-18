@@ -52,10 +52,16 @@ export function PersonView({
   person,
   selected = false,
   onClick,
+  onEditClicked,
 }: {
+  /** Person to display */
   person: IPerson;
+  /** Is the person selected */
   selected: boolean;
+  /** Callback on click on the person view */
   onClick: () => void;
+  /** Callback on click on edit button */
+  onEditClicked?: (person: IPerson) => void;
 }): JSX.Element {
   let officialName = person.firstname;
   if (person.lastname !== undefined) {
@@ -81,9 +87,6 @@ export function PersonView({
   };
   const onUpdateContactClicked = (): void => {
     console.log("TODO update last contact", person.lastcontact);
-  };
-  const onEditClicked = (): void => {
-    console.log("TODO edit person", person);
   };
 
   return (
@@ -113,7 +116,7 @@ export function PersonView({
           <Button onClick={onUpdateContactClicked}>
             <UpdateIcon />
           </Button>
-          <Button onClick={onEditClicked}>
+          <Button onClick={() => onEditClicked?.(person)}>
             <EditIcon />
           </Button>
         </div>
@@ -125,7 +128,15 @@ export function PersonView({
 /**
  * View of the persons' list
  */
-export function PersonsList({persons}: {persons: IPerson[]}): JSX.Element {
+export function PersonsList({
+  persons,
+  onEditClicked,
+}: {
+  /** List of persons */
+  persons: IPerson[];
+  /** Function to edit a person */
+  onEditClicked?: (person: IPerson) => void;
+}): JSX.Element {
   const [selection, select] = useState<number>(-1);
   const items: JSX.Element[] = [];
   let index = 0;
@@ -142,6 +153,7 @@ export function PersonsList({persons}: {persons: IPerson[]}): JSX.Element {
             select(key);
           }
         }}
+        onEditClicked={onEditClicked}
         selected={key === selection}
       />
     );
@@ -232,7 +244,6 @@ function DateField({
 
 /**
  * Dialog to create/edit a person.
- * For now, only used for creation.
  */
 export function EditPersonDialog({
   person,
@@ -240,7 +251,7 @@ export function EditPersonDialog({
   onCancel,
   onValidate,
 }: {
-  /** The person to edit (not used for now) */
+  /** The person to edit */
   person?: IPerson;
 
   /** Whether the dialog is open */
