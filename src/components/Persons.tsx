@@ -24,11 +24,16 @@ import CallIcon from "@mui/icons-material/Call";
 import UpdateIcon from "@mui/icons-material/Update";
 import EditIcon from "@mui/icons-material/Edit";
 import "dayjs/locale/fr";
-import {Dayjs} from "dayjs";
+import daysjs, {Dayjs} from "dayjs";
 import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
 import {LocalizationProvider} from "@mui/x-date-pickers/LocalizationProvider";
 import {DatePicker} from "@mui/x-date-pickers/DatePicker";
 
+/**
+ * Return the description of the date relativelly to now
+ * @param date Date to consider
+ * @returns A string such as '13 days ago'
+ */
 function dateString(date?: number): string {
   switch (moment.locale()) {
     case "fr":
@@ -45,6 +50,20 @@ function dateString(date?: number): string {
   }
 }
 
+interface PersonViewProps {
+  /** Person to display */
+  person: IPerson;
+
+  /** Is the person selected */
+  selected: boolean;
+
+  /** Callback on click on the person view */
+  onClick: () => void;
+
+  /** Callback on click on edit button */
+  onEditClicked?: (person: IPerson) => void;
+}
+
 /**
  * View for a single person
  */
@@ -52,11 +71,8 @@ export function PersonView({
   person,
   selected = false,
   onClick,
-}: {
-  person: IPerson;
-  selected: boolean;
-  onClick: () => void;
-}): JSX.Element {
+  onEditClicked,
+}: PersonViewProps): JSX.Element {
   let officialName = person.firstname;
   if (person.lastname !== undefined) {
     if (officialName !== undefined) {
@@ -65,6 +81,7 @@ export function PersonView({
       officialName = person.lastname;
     }
   }
+
   let mainName, secondaryName;
   if (person.nickname !== undefined) {
     mainName = person.nickname;
@@ -81,9 +98,6 @@ export function PersonView({
   };
   const onUpdateContactClicked = (): void => {
     console.log("TODO update last contact", person.lastcontact);
-  };
-  const onEditClicked = (): void => {
-    console.log("TODO edit person", person);
   };
 
   return (
@@ -113,7 +127,7 @@ export function PersonView({
           <Button onClick={onUpdateContactClicked}>
             <UpdateIcon />
           </Button>
-          <Button onClick={onEditClicked}>
+          <Button onClick={() => onEditClicked?.(person)}>
             <EditIcon />
           </Button>
         </div>
@@ -122,11 +136,23 @@ export function PersonView({
   );
 }
 
+interface PersonsListProps {
+  /** List of persons */
+  persons: IPerson[];
+
+  /** Function to edit a person */
+  onEditClicked?: (person: IPerson) => void;
+}
+
 /**
  * View of the persons' list
  */
-export function PersonsList({persons}: {persons: IPerson[]}): JSX.Element {
+export function PersonsList({
+  persons,
+  onEditClicked,
+}: PersonsListProps): JSX.Element {
   const [selection, select] = useState<number>(-1);
+
   const items: JSX.Element[] = [];
   let index = 0;
   for (const person of persons) {
@@ -135,13 +161,8 @@ export function PersonsList({persons}: {persons: IPerson[]}): JSX.Element {
       <PersonView
         key={key}
         person={person}
-        onClick={() => {
-          if (key === selection) {
-            select(-1);
-          } else {
-            select(key);
-          }
-        }}
+        onClick={() => select(key === selection ? -1 : key)}
+        onEditClicked={onEditClicked}
         selected={key === selection}
       />
     );
@@ -149,19 +170,17 @@ export function PersonsList({persons}: {persons: IPerson[]}): JSX.Element {
   return <List>{items}</List>;
 }
 
-/**
- * Text field for the edit/create dialog
- * @param props Includes:
- * @returns TextField instance
- */
-function Field({
-  name,
-  ...other
-}: {
+interface FieldProps {
   /** Defines the `label` of the textfield, as well as its `id` and `name` */
   name: string;
+
   [key: string]: any;
-}): JSX.Element {
+}
+
+/**
+ * Text field for the edit/create dialog
+ */
+function Field({name, ...other}: FieldProps): JSX.Element {
   return (
     <TextField
       margin="dense"
@@ -179,14 +198,7 @@ function Field({
  * Field for a phone number.
  * Only accept number digits and an optional prefixing `+`.
  */
-function PhoneNumberField({
-  name,
-  ...other
-}: {
-  /** Defines the `label` of the textfield, as well as its `id` and `name` */
-  name: string;
-  [key: string]: any;
-}): JSX.Element {
+function PhoneNumberField(props: FieldProps): JSX.Element {
   const [value, setValue] = useState<string>("");
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
@@ -202,7 +214,12 @@ function PhoneNumberField({
     setValue(result);
   };
 
-  return <Field name={name} value={value} onChange={handleChange} {...other} />;
+  return <Field {...props} value={value} onChange={handleChange} />;
+}
+
+interface DateFieldProps extends FieldProps {
+  /** Initial date value as a number */
+  date?: number;
 }
 
 /**
@@ -210,37 +227,34 @@ function PhoneNumberField({
  */
 function DateField({
   name,
+  date = undefined,
   ...other
-}: {
-  /** Defines the `label` of the textfield, as well as its `id` and `name` */
-  name: string;
-  [key: string]: any;
-}): JSX.Element {
-  const [value, setValue] = useState<Dayjs | null>(null);
+}: DateFieldProps): JSX.Element {
+  const [value, setValue] = useState<Dayjs | null>(
+    date !== undefined ? daysjs(date) : null
+  );
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="fr">
       <DatePicker
         label={name}
         value={value}
         onChange={setValue}
-        renderInput={(params) => <Field name={name} {...params} />}
+        renderInput={(params) => (
+          <div>
+            <div style={{display: "none"}}>
+              <Field name={name} value={value ?? ""} />
+            </div>
+            <Field name={`mirror-${name}`} label={name} {...params} />
+          </div>
+        )}
         {...other}
       />
     </LocalizationProvider>
   );
 }
 
-/**
- * Dialog to create/edit a person.
- * For now, only used for creation.
- */
-export function EditPersonDialog({
-  person,
-  open,
-  onCancel,
-  onValidate,
-}: {
-  /** The person to edit (not used for now) */
+interface EditPersonDialogProps {
+  /** The person to edit */
   person?: IPerson;
 
   /** Whether the dialog is open */
@@ -251,12 +265,23 @@ export function EditPersonDialog({
 
   /** Callback onedition/creation validation (with new person as param) */
   onValidate: (person: IPerson) => void;
-}): JSX.Element {
+}
+
+/**
+ * Dialog to create/edit a person.
+ */
+export function EditPersonDialog({
+  person,
+  open,
+  onCancel,
+  onValidate,
+}: EditPersonDialogProps): JSX.Element {
   const [error, setError] = useState<string | undefined>(undefined);
   const handleValidate = (event: FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
 
+    /** Get the value of the field named `name` or undefined if empty */
     const get = (name: string): string | undefined => {
       const value = data.get(name);
       if (typeof value === "string" && value.trim() !== "") {
@@ -265,12 +290,17 @@ export function EditPersonDialog({
       return undefined;
     };
 
+    let lastContact: number | undefined = parseInt(get("last-contact") ?? "");
+    if (isNaN(lastContact)) {
+      lastContact = undefined;
+    }
+
     const person = {
       nickname: get("nickname"),
       firstname: get("firstname"),
       lastname: get("lastname"),
-      phoneNumber: get("phone-number"),
-      lastContact: get("last-contact"),
+      phonenumber: get("phone-number"),
+      lastcontact: lastContact,
     };
 
     if (
@@ -296,16 +326,17 @@ export function EditPersonDialog({
           component="form"
           id="dialog-form"
           onSubmit={handleValidate}>
-          <Field name="Nickname" autoFocus={true} />
-          <Field name="Firstname" />
-          <Field name="Lastname" />
-          <PhoneNumberField name="Phone number" />
+          <Field name="Nickname" autoFocus={true} value={person?.nickname} />
+          <Field name="Firstname" value={person?.firstname} />
+          <Field name="Lastname" value={person?.lastname} />
+          <PhoneNumberField name="Phone number" value={person?.phonenumber} />
           <DateField
             name="Last contact"
             PopperProps={{
               // Setting an higher z-index for the popper to be above the dialog
               className: "z-[1400]",
             }}
+            date={person?.lastcontact}
           />
         </FormControl>
       </DialogContent>
