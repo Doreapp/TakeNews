@@ -48,19 +48,19 @@ export function PersonsProvider({
   const [persons, setPersons] = React.useState<IPerson[]>(getPersons());
 
   const debug = (...args: any[]): void => {
-    console.debug("[PersonsContext]", ...args)
-  }
+    console.debug("[PersonsContext]", ...args);
+  };
 
   /** Save the current list of persons to localStorage */
   function savePersons(persons: IPerson[]): void {
-    debug("save persons", persons)
+    debug("save persons", persons);
     localStorage.setItem(PERSONS_KEY, JSON.stringify(persons));
     setPersons(persons);
   }
 
   /** Create a new person */
   function createPerson(person: IPerson): IPerson {
-    debug("create new person", person)
+    debug("create new person", person);
     person.id = nextId++;
     const persons = getPersons();
     persons.push(person);
@@ -76,7 +76,7 @@ export function PersonsProvider({
 
   /** Update a person */
   function updatePerson(person: IPerson): void {
-    debug("update person", person)
+    debug("update person", person);
     const persons = getPersons();
     const index = persons.findIndex(
       (storedPerson) => storedPerson.id === person.id
@@ -94,7 +94,7 @@ export function PersonsProvider({
 
   /** Delete a person */
   function deletePerson(id: number): void {
-    debug("delete person with id", id)
+    debug("delete person with id", id);
     const persons = getPersons();
     const index = persons.findIndex((person) => person.id === id);
     if (index !== -1) {

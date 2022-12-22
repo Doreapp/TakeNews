@@ -340,10 +340,17 @@ export function EditPersonDialog({
           component="form"
           id="dialog-form"
           onSubmit={handleValidate}>
-          <Field name="Nickname" autoFocus={true} defaultValue={person?.nickname} />
+          <Field
+            name="Nickname"
+            autoFocus={true}
+            defaultValue={person?.nickname}
+          />
           <Field name="Firstname" defaultValue={person?.firstname} />
           <Field name="Lastname" defaultValue={person?.lastname} />
-          <PhoneNumberField name="Phone number" defaultValue={person?.phonenumber} />
+          <PhoneNumberField
+            name="Phone number"
+            defaultValue={person?.phonenumber}
+          />
           <DateField
             name="Last contact"
             PopperProps={{
