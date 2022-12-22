@@ -45,7 +45,7 @@ export function PersonsProvider({
     }
   }
 
-  const [persons, setPersons] = React.useState<IPerson[]>([]);
+  const [persons, setPersons] = React.useState<IPerson[]>(getPersons());
 
   /** Save the current list of persons to localStorage */
   function savePersons(persons: IPerson[]): void {
