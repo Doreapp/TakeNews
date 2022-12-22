@@ -52,7 +52,15 @@ function dateString(date?: number): string {
   }
 }
 
-interface PersonViewProps {
+interface PersonCallbacks {
+  /** Callback on click on edit button */
+  onEditClicked?: (person: IPerson) => void;
+
+  /** Callback on click on delete button */
+  onDeleteClicked?: (person: IPerson) => void;
+}
+
+interface PersonViewProps extends PersonCallbacks {
   /** Person to display */
   person: IPerson;
 
@@ -61,12 +69,6 @@ interface PersonViewProps {
 
   /** Callback on click on the person view */
   onClick: () => void;
-
-  /** Callback on click on edit button */
-  onEditClicked?: (person: IPerson) => void;
-
-  /** Callback on click on delete button */
-  onDeleteClicked?: (person: IPerson) => void;
 }
 
 /**
@@ -145,15 +147,9 @@ export function PersonView({
   );
 }
 
-interface PersonsListProps {
+interface PersonsListProps extends PersonCallbacks {
   /** List of persons */
   persons: IPerson[];
-
-  /** Function to edit a person */
-  onEditClicked?: (person: IPerson) => void;
-
-  /** Function to delete a person */
-  onDeleteClicked?: (person: IPerson) => void;
 }
 
 /**
