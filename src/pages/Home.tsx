@@ -10,6 +10,8 @@ import {PersonsList, EditPersonDialog} from "../components/Persons";
 import {Fab} from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import {usePersonsContext} from "../core/persons-context";
+import {LocalizationProvider} from "@mui/x-date-pickers/LocalizationProvider";
+import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
 
 interface HomeState {
   creating: boolean;
@@ -39,30 +41,37 @@ export default function HomePage(): JSX.Element {
     }
   };
 
+  const onUpdateLastContact = (person: IPerson): void => {
+    updatePerson(person);
+  };
+
   return (
-    <Container maxWidth="md">
-      <PersonsList
-        persons={persons}
-        onEditClicked={(person: IPerson) =>
-          setState({...state, editing: person})
-        }
-        onDeleteClicked={onDeletePerson}
-      />
-      <EditPersonDialog
-        person={state.editing}
-        open={state.creating || state.editing !== undefined}
-        onCancel={() => {
-          setState({...state, creating: false, editing: undefined});
-        }}
-        onValidate={onCreateOrEditPerson}
-      />
-      <Fab
-        color="primary"
-        aria-label="Create a new person"
-        className="fixed bottom-6 right-4"
-        onClick={() => setState({...state, creating: true})}>
-        <AddIcon />
-      </Fab>
-    </Container>
+    <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="fr">
+      <Container maxWidth="md">
+        <PersonsList
+          persons={persons}
+          onEditClicked={(person: IPerson) =>
+            setState({...state, editing: person})
+          }
+          onDeleteClicked={onDeletePerson}
+          onUpdateLastContact={onUpdateLastContact}
+        />
+        <EditPersonDialog
+          person={state.editing}
+          open={state.creating || state.editing !== undefined}
+          onCancel={() => {
+            setState({...state, creating: false, editing: undefined});
+          }}
+          onValidate={onCreateOrEditPerson}
+        />
+        <Fab
+          color="primary"
+          aria-label="Create a new person"
+          className="fixed bottom-6 right-4"
+          onClick={() => setState({...state, creating: true})}>
+          <AddIcon />
+        </Fab>
+      </Container>
+    </LocalizationProvider>
   );
 }

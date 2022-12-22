@@ -16,6 +16,7 @@ import {
   DialogActions,
   FormControl,
   Alert,
+  TextFieldProps,
 } from "@mui/material";
 import React, {FormEvent, useState} from "react";
 import {IPerson} from "../models";
@@ -26,8 +27,6 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import "dayjs/locale/fr";
 import daysjs, {Dayjs} from "dayjs";
-import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
-import {LocalizationProvider} from "@mui/x-date-pickers/LocalizationProvider";
 import {DatePicker} from "@mui/x-date-pickers/DatePicker";
 import {EmptyIcon} from "./icons";
 
@@ -52,7 +51,18 @@ function dateString(date?: number): string {
   }
 }
 
-interface PersonViewProps {
+interface PersonCallbacks {
+  /** Callback on click on edit button */
+  onEditClicked?: (person: IPerson) => void;
+
+  /** Callback on click on delete button */
+  onDeleteClicked?: (person: IPerson) => void;
+
+  /** Callback on update last contact (pass updated person) */
+  onUpdateLastContact?: (person: IPerson) => void;
+}
+
+interface PersonViewProps extends PersonCallbacks {
   /** Person to display */
   person: IPerson;
 
@@ -61,12 +71,6 @@ interface PersonViewProps {
 
   /** Callback on click on the person view */
   onClick: () => void;
-
-  /** Callback on click on edit button */
-  onEditClicked?: (person: IPerson) => void;
-
-  /** Callback on click on delete button */
-  onDeleteClicked?: (person: IPerson) => void;
 }
 
 /**
@@ -78,7 +82,9 @@ export function PersonView({
   onClick,
   onEditClicked,
   onDeleteClicked,
+  onUpdateLastContact,
 }: PersonViewProps): JSX.Element {
+  const [datePickerOpen, setDatePickerOpen] = useState<boolean>(false);
   let officialName = person.firstname;
   if (person.lastname !== undefined) {
     if (officialName !== undefined) {
@@ -102,8 +108,9 @@ export function PersonView({
   const onCallClicked = (): void => {
     console.log("TODO call the person", person.phonenumber);
   };
-  const onUpdateContactClicked = (): void => {
-    console.log("TODO update last contact", person.lastcontact);
+  const handleLastContactChanged = (date: Dayjs | null): void => {
+    onUpdateLastContact?.({...person, lastcontact: daysjs(date).valueOf()});
+    setDatePickerOpen(false);
   };
 
   return (
@@ -130,9 +137,25 @@ export function PersonView({
           <Button onClick={onCallClicked}>
             <CallIcon />
           </Button>
-          <Button onClick={onUpdateContactClicked}>
-            <UpdateIcon />
-          </Button>
+          <DatePicker
+            open={datePickerOpen}
+            onClose={() => setDatePickerOpen(false)}
+            value={person.lastcontact}
+            onChange={handleLastContactChanged}
+            renderInput={(props: TextFieldProps) => {
+              return (
+                <div>
+                  <TextField
+                    {...props}
+                    style={{opacity: 0, width: 0, height: 0}}
+                  />
+                  <Button onClick={() => setDatePickerOpen(true)}>
+                    <UpdateIcon />
+                  </Button>
+                </div>
+              );
+            }}
+          />
           <Button onClick={() => onEditClicked?.(person)}>
             <EditIcon />
           </Button>
@@ -145,15 +168,9 @@ export function PersonView({
   );
 }
 
-interface PersonsListProps {
+interface PersonsListProps extends PersonCallbacks {
   /** List of persons */
   persons: IPerson[];
-
-  /** Function to edit a person */
-  onEditClicked?: (person: IPerson) => void;
-
-  /** Function to delete a person */
-  onDeleteClicked?: (person: IPerson) => void;
 }
 
 /**
@@ -163,6 +180,7 @@ export function PersonsList({
   persons,
   onEditClicked,
   onDeleteClicked,
+  onUpdateLastContact,
 }: PersonsListProps): JSX.Element {
   const [selection, select] = useState<number>(-1);
 
@@ -177,6 +195,7 @@ export function PersonsList({
         onClick={() => select(key === selection ? -1 : key)}
         onEditClicked={onEditClicked}
         onDeleteClicked={onDeleteClicked}
+        onUpdateLastContact={onUpdateLastContact}
         selected={key === selection}
       />
     );
@@ -258,22 +277,20 @@ function DateField({
     date !== undefined ? daysjs(date) : null
   );
   return (
-    <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="fr">
-      <DatePicker
-        label={name}
-        value={value}
-        onChange={setValue}
-        renderInput={(params) => (
-          <div>
-            <div style={{display: "none"}}>
-              <Field name={name} value={value ?? ""} />
-            </div>
-            <Field name={`mirror-${name}`} label={name} {...params} />
+    <DatePicker
+      label={name}
+      value={value}
+      onChange={setValue}
+      renderInput={(params) => (
+        <div>
+          <div style={{display: "none"}}>
+            <Field name={name} value={value ?? ""} />
           </div>
-        )}
-        {...other}
-      />
-    </LocalizationProvider>
+          <Field name={`mirror-${name}`} label={name} {...params} />
+        </div>
+      )}
+      {...other}
+    />
   );
 }
 
