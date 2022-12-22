@@ -29,6 +29,7 @@ import daysjs, {Dayjs} from "dayjs";
 import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
 import {LocalizationProvider} from "@mui/x-date-pickers/LocalizationProvider";
 import {DatePicker} from "@mui/x-date-pickers/DatePicker";
+import {EmptyIcon} from "./icons";
 
 /**
  * Return the description of the date relativelly to now
@@ -178,6 +179,16 @@ export function PersonsList({
         onDeleteClicked={onDeleteClicked}
         selected={key === selection}
       />
+    );
+  }
+  if (items.length === 0) {
+    return (
+      <div>
+        <EmptyIcon className="w-full h-full p-5 mt-10" />
+        <Typography variant="body2" align="center">
+          Nothing here...
+        </Typography>
+      </div>
     );
   }
   return <List>{items}</List>;
