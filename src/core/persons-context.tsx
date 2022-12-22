@@ -37,7 +37,7 @@ export function PersonsProvider({
       try {
         return JSON.parse(json);
       } catch (error) {
-        console.error("Error while parsin persons from local storage", error);
+        console.error("Error while parsing persons from local storage", error);
         return [];
       }
     } else {
