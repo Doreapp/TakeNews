@@ -9,50 +9,44 @@ import {IPerson} from "../models";
 import {PersonsList, EditPersonDialog} from "../components/Persons";
 import {Fab} from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
+import {usePersonsContext} from "../core/persons-context";
 
 interface HomeState {
   creating: boolean;
   editing?: IPerson;
-  persons: IPerson[];
 }
 
 export default function HomePage(): JSX.Element {
   const [state, setState] = React.useState<HomeState>({
     creating: false,
     editing: undefined,
-    persons: [],
   });
+  const {persons, createPerson, deletePerson, updatePerson} =
+    usePersonsContext();
 
   const onCreateOrEditPerson = (newPerson: IPerson): void => {
     if (state.creating) {
-      setState({
-        ...state,
-        creating: false,
-        persons: [...state.persons, newPerson],
-      });
+      createPerson(newPerson);
     } else if (state.editing !== undefined) {
-      const newPersons = state.persons.map((person: IPerson) =>
-        person === state.editing ? newPerson : person
-      );
-      setState({...state, editing: undefined, persons: newPersons});
+      updatePerson(newPerson);
     }
+    setState({...state, creating: false, editing: undefined});
   };
 
-  const deletePerson = (toDelete: IPerson): void => {
-    const newPersons = state.persons.filter(
-      (person: IPerson) => person !== toDelete
-    );
-    setState({...state, persons: newPersons});
+  const onDeletePerson = (toDelete: IPerson): void => {
+    if (toDelete.id !== undefined) {
+      deletePerson(toDelete.id);
+    }
   };
 
   return (
     <Container maxWidth="md">
       <PersonsList
-        persons={state.persons}
+        persons={persons}
         onEditClicked={(person: IPerson) =>
           setState({...state, editing: person})
         }
-        onDeleteClicked={deletePerson}
+        onDeleteClicked={onDeletePerson}
       />
       <EditPersonDialog
         person={state.editing}

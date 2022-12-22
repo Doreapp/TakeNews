@@ -3,6 +3,7 @@ import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import Link from "@mui/material/Link";
 import HomePage from "./pages/Home";
+import {PersonsProvider} from "./core/persons-context";
 
 function Copyright(): JSX.Element {
   return (
@@ -19,9 +20,11 @@ function Copyright(): JSX.Element {
 
 export default function App(): JSX.Element {
   return (
-    <Container className="min-h-screen flex flex-col place-content-between">
-      <HomePage />
-      <Copyright />
-    </Container>
+    <PersonsProvider>
+      <Container className="min-h-screen flex flex-col place-content-between">
+        <HomePage />
+        <Copyright />
+      </Container>
+    </PersonsProvider>
   );
 }

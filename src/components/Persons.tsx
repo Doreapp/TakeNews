@@ -308,7 +308,8 @@ export function EditPersonDialog({
       lastContact = undefined;
     }
 
-    const person = {
+    const newPerson = {
+      ...person,
       nickname: get("nickname"),
       firstname: get("firstname"),
       lastname: get("lastname"),
@@ -317,16 +318,16 @@ export function EditPersonDialog({
     };
 
     if (
-      person.nickname === undefined &&
-      person.firstname === undefined &&
-      person.lastname === undefined
+      newPerson.nickname === undefined &&
+      newPerson.firstname === undefined &&
+      newPerson.lastname === undefined
     ) {
       setError("At least one of the names must be defined");
       return;
     }
 
     setError(undefined);
-    onValidate(person);
+    onValidate(newPerson);
   };
 
   const editing = person !== undefined;
@@ -339,10 +340,17 @@ export function EditPersonDialog({
           component="form"
           id="dialog-form"
           onSubmit={handleValidate}>
-          <Field name="Nickname" autoFocus={true} value={person?.nickname} />
-          <Field name="Firstname" value={person?.firstname} />
-          <Field name="Lastname" value={person?.lastname} />
-          <PhoneNumberField name="Phone number" value={person?.phonenumber} />
+          <Field
+            name="Nickname"
+            autoFocus={true}
+            defaultValue={person?.nickname}
+          />
+          <Field name="Firstname" defaultValue={person?.firstname} />
+          <Field name="Lastname" defaultValue={person?.lastname} />
+          <PhoneNumberField
+            name="Phone number"
+            defaultValue={person?.phonenumber}
+          />
           <DateField
             name="Last contact"
             PopperProps={{
