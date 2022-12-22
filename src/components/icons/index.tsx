@@ -1,5 +1,5 @@
 /**
- * Warper for SVG icons
+ * Warpper for SVG icons
  */
 
 export {ReactComponent as EmptyIcon} from "./Empty.svg";
