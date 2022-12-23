@@ -16,7 +16,6 @@ import {
   DialogActions,
   FormControl,
   Alert,
-  TextFieldProps,
 } from "@mui/material";
 import React, {FormEvent, useState} from "react";
 import {IPerson} from "../models";
@@ -30,6 +29,7 @@ import daysjs, {Dayjs} from "dayjs";
 import {DatePicker} from "@mui/x-date-pickers/DatePicker";
 import {EmptyIcon} from "./icons";
 import {PhoneButton} from "./PhoneButton";
+import {DatePickerButton} from "./DatePickerButton";
 
 /**
  * Return the description of the date relativelly to now
@@ -85,7 +85,6 @@ export function PersonView({
   onDeleteClicked,
   onUpdateLastContact,
 }: PersonViewProps): JSX.Element {
-  const [datePickerOpen, setDatePickerOpen] = useState<boolean>(false);
   let officialName = person.firstname;
   if (person.lastname !== undefined) {
     if (officialName !== undefined) {
@@ -106,9 +105,8 @@ export function PersonView({
     secondaryName = " — " + secondaryName;
   }
 
-  const handleLastContactChanged = (date: Dayjs | null): void => {
-    onUpdateLastContact?.({...person, lastcontact: daysjs(date).valueOf()});
-    setDatePickerOpen(false);
+  const handleLastContactChanged = (date: number): void => {
+    onUpdateLastContact?.({...person, lastcontact: date});
   };
 
   return (
@@ -141,25 +139,11 @@ export function PersonView({
               <CallIcon />
             </PhoneButton>
           )}
-          <DatePicker
-            open={datePickerOpen}
-            onClose={() => setDatePickerOpen(false)}
-            value={person.lastcontact}
-            onChange={handleLastContactChanged}
-            renderInput={(props: TextFieldProps) => {
-              return (
-                <div>
-                  <TextField
-                    {...props}
-                    style={{opacity: 0, width: 0, height: 0}}
-                  />
-                  <Button onClick={() => setDatePickerOpen(true)}>
-                    <UpdateIcon />
-                  </Button>
-                </div>
-              );
-            }}
-          />
+          <DatePickerButton
+            date={person.lastcontact}
+            onDateChange={handleLastContactChanged}>
+            <UpdateIcon />
+          </DatePickerButton>
           <Button onClick={() => onEditClicked?.(person)}>
             <EditIcon />
           </Button>
