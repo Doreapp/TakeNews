@@ -6,7 +6,8 @@
 import * as React from "react";
 import Container from "@mui/material/Container";
 import {IPerson} from "../models";
-import {PersonsList, EditPersonDialog} from "../components/Persons";
+import PersonsList from "../components/Persons/PersonsList";
+import EditPersonDialog from "../components/Persons/EditPersonDialog";
 import {Fab} from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import {usePersonsContext} from "../core/persons-context";
