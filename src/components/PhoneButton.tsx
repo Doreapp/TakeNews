@@ -12,7 +12,7 @@ export interface PhoneButtonProps extends ButtonProps {
   phoneNumber: string;
 }
 
-export function PhoneButton({
+export default function PhoneButton({
   phoneNumber,
   children,
   ...props

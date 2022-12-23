@@ -19,8 +19,8 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import "dayjs/locale/fr";
 import {EmptyIcon} from "../icons";
-import {PhoneButton} from "../PhoneButton";
-import {DatePickerButton} from "../DatePickerButton";
+import PhoneButton from "../PhoneButton";
+import DatePickerButton from "../DatePickerButton";
 
 /**
  * Return the description of the date relativelly to now

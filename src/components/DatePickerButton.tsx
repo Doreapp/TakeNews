@@ -15,7 +15,7 @@ export interface DatePickerButtonProps extends ButtonProps {
   date?: number;
 }
 
-export function DatePickerButton({
+export default function DatePickerButton({
   onDateChange,
   date,
   children,
