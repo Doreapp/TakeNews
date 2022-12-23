@@ -29,6 +29,7 @@ import "dayjs/locale/fr";
 import daysjs, {Dayjs} from "dayjs";
 import {DatePicker} from "@mui/x-date-pickers/DatePicker";
 import {EmptyIcon} from "./icons";
+import {PhoneButton} from "./PhoneButton";
 
 /**
  * Return the description of the date relativelly to now
@@ -105,9 +106,6 @@ export function PersonView({
     secondaryName = " — " + secondaryName;
   }
 
-  const onCallClicked = (): void => {
-    console.log("TODO call the person", person.phonenumber);
-  };
   const handleLastContactChanged = (date: Dayjs | null): void => {
     onUpdateLastContact?.({...person, lastcontact: daysjs(date).valueOf()});
     setDatePickerOpen(false);
@@ -134,9 +132,15 @@ export function PersonView({
       </ListItemButton>
       <Collapse in={selected} timeout="auto" unmountOnExit>
         <div className="flex flex-row place-content-around pl-2">
-          <Button onClick={onCallClicked}>
-            <CallIcon />
-          </Button>
+          {person.phonenumber === undefined ? (
+            <Button disabled>
+              <CallIcon />
+            </Button>
+          ) : (
+            <PhoneButton phoneNumber={person.phonenumber}>
+              <CallIcon />
+            </PhoneButton>
+          )}
           <DatePicker
             open={datePickerOpen}
             onClose={() => setDatePickerOpen(false)}
