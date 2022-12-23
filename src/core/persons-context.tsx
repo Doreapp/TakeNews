@@ -46,6 +46,7 @@ export function PersonsProvider({
   }
 
   const [persons, setPersons] = React.useState<IPerson[]>(getPersons());
+  nextId = Math.max(...persons.map((person) => person.id ?? -1)) + 1;
 
   const debug = (...args: any[]): void => {
     console.debug("[PersonsContext]", ...args);
