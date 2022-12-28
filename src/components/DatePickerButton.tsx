@@ -13,12 +13,16 @@ export interface DatePickerButtonProps extends ButtonProps {
 
   /** Initial date value */
   date?: number;
+
+  /** Whether to disable dates in the future */
+  disableFuture?: boolean;
 }
 
 export default function DatePickerButton({
   onDateChange,
   date,
   children,
+  disableFuture = false,
   ...buttonProps
 }: DatePickerButtonProps): JSX.Element {
   const [isOpen, setIsOpen] = React.useState<boolean>(false);
@@ -34,6 +38,7 @@ export default function DatePickerButton({
   return (
     <DatePicker
       open={isOpen}
+      disableFuture={disableFuture}
       onClose={() => setIsOpen(false)}
       onAccept={handleAccept}
       value={currentDate}
