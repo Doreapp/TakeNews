@@ -41,7 +41,10 @@ export default function DatePickerButton({
       renderInput={(props: TextFieldProps) => {
         return (
           <>
-            <TextField {...props} style={{opacity: 0, width: 0, height: 0}} />
+            <TextField
+              {...props}
+              style={{opacity: 0, width: 0, height: 0, position: "absolute"}}
+            />
             <Button {...buttonProps} onClick={() => setIsOpen(true)}>
               {children}
             </Button>
