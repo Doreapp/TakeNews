@@ -86,6 +86,7 @@ function DateField({
       label={name}
       value={value}
       onChange={setValue}
+      disableFuture={true}
       renderInput={(params) => (
         <div>
           <div style={{display: "none"}}>

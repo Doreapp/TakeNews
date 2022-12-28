@@ -132,7 +132,8 @@ export function PersonView({
           )}
           <DatePickerButton
             date={person.lastcontact}
-            onDateChange={handleLastContactChanged}>
+            onDateChange={handleLastContactChanged}
+            disableFuture={true}>
             <UpdateIcon />
           </DatePickerButton>
           <Button onClick={() => onEditClicked?.(person)}>

@@ -13,17 +13,24 @@ export interface DatePickerButtonProps extends ButtonProps {
 
   /** Initial date value */
   date?: number;
+
+  /** Whether to disable dates in the future */
+  disableFuture?: boolean;
 }
 
 export default function DatePickerButton({
   onDateChange,
   date,
   children,
+  disableFuture = false,
   ...buttonProps
 }: DatePickerButtonProps): JSX.Element {
   const [isOpen, setIsOpen] = React.useState<boolean>(false);
+  const [currentDate, setCurrentDate] = React.useState<Dayjs | null>(
+    dayjs(date)
+  );
 
-  const handleDateChange = (date: Dayjs | null): void => {
+  const handleAccept = (date: Dayjs | null): void => {
     setIsOpen(false);
     onDateChange?.(dayjs(date).valueOf());
   };
@@ -31,13 +38,18 @@ export default function DatePickerButton({
   return (
     <DatePicker
       open={isOpen}
+      disableFuture={disableFuture}
       onClose={() => setIsOpen(false)}
-      value={date}
-      onChange={handleDateChange}
+      onAccept={handleAccept}
+      value={currentDate}
+      onChange={setCurrentDate}
       renderInput={(props: TextFieldProps) => {
         return (
           <>
-            <TextField {...props} style={{opacity: 0, width: 0, height: 0}} />
+            <TextField
+              {...props}
+              style={{opacity: 0, width: 0, height: 0, position: "absolute"}}
+            />
             <Button {...buttonProps} onClick={() => setIsOpen(true)}>
               {children}
             </Button>
