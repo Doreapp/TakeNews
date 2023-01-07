@@ -11,18 +11,20 @@ import {
   DialogActions,
   FormControl,
   Alert,
+  InputAdornment,
+  StandardTextFieldProps,
 } from "@mui/material";
+import PermContactCalendarIcon from "@mui/icons-material/PermContactCalendar";
 import React, {FormEvent, useState} from "react";
 import {IPerson} from "../../models";
 import "dayjs/locale/fr";
 import daysjs, {Dayjs} from "dayjs";
 import {DatePicker} from "@mui/x-date-pickers/DatePicker";
+import ContactsPickerButton, {IContact} from "../ContactPickerButton";
 
-interface FieldProps {
+interface FieldProps extends StandardTextFieldProps {
   /** Defines the `label` of the textfield, as well as its `id` and `name` */
   name: string;
-
-  [key: string]: any;
 }
 
 /**
@@ -62,12 +64,42 @@ function PhoneNumberField(props: FieldProps): JSX.Element {
     setValue(result);
   };
 
-  return <Field {...props} value={value} onChange={handleChange} />;
+  const handleContactSelected = (contact: IContact): void => {
+    if (contact.tel.length > 0) {
+      setValue(contact.tel[0].replaceAll(" ", ""));
+    }
+  };
+
+  return (
+    <Field
+      {...props}
+      value={value}
+      onChange={handleChange}
+      InputProps={{
+        endAdornment: (
+          <InputAdornment position="end">
+            <ContactsPickerButton
+              onContactSelected={handleContactSelected}
+              aria-label="select a contact from device's list"
+              edge="end"
+              multiple={false}>
+              <PermContactCalendarIcon />
+            </ContactsPickerButton>
+          </InputAdornment>
+        ),
+      }}
+    />
+  );
 }
 
-interface DateFieldProps extends FieldProps {
+interface DateFieldProps {
+  /** Defines the `label` of the textfield, as well as its `id` and `name` */
+  name: string;
+
   /** Initial date value as a number */
   date?: number;
+
+  [key: string]: any;
 }
 
 /**
@@ -83,6 +115,7 @@ function DateField({
   );
   return (
     <DatePicker
+      {...other}
       label={name}
       value={value}
       onChange={setValue}
@@ -92,10 +125,14 @@ function DateField({
           <div style={{display: "none"}}>
             <Field name={name} value={value ?? ""} />
           </div>
-          <Field name={`mirror-${name}`} label={name} {...params} />
+          <Field
+            {...params}
+            variant="standard"
+            name={`mirror-${name}`}
+            label={name}
+          />
         </div>
       )}
-      {...other}
     />
   );
 }
