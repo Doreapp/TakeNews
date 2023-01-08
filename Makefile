@@ -29,7 +29,7 @@ run_%:
 
 start: 		## Run 'npm start': start the development server
 start:
-	$(DOCKER_RUN) -i -t $(DOCKER_IMAGE) start
+	$(DOCKER_RUN) -i -e HTTPS=true -t $(DOCKER_IMAGE) start
 
 dev: 		## Build and start the development server
 dev: docker_build start
